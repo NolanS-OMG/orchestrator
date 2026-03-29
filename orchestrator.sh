@@ -27,6 +27,46 @@ read_json() {
     python3 -c "import sys,json; data=json.load(sys.stdin); expr=sys.argv[1]; print(eval('data' + expr) if expr else data)" "$expr"
 }
 
+repo_tree() {
+    depth="$1"
+    shift
+
+    if command -v tree >/dev/null 2>&1; then
+        tree -L "$depth" "$@"
+        return
+    fi
+
+    # Fallback when tree is unavailable: render a simple indented listing.
+    for root in "$@"; do
+        if [ ! -e "$root" ]; then
+            echo "$root [missing]"
+            continue
+        fi
+
+        echo "$root"
+
+        if [ -d "$root" ]; then
+            find "$root" -mindepth 1 -maxdepth "$depth" -print \
+                | sort \
+                | awk -v root="$root" '
+                    {
+                        rel = $0
+                        sub("^" root "/?", "", rel)
+                        if (rel == "") {
+                            next
+                        }
+                        n = split(rel, parts, "/")
+                        indent = ""
+                        for (i = 1; i < n; i++) {
+                            indent = indent "  "
+                        }
+                        print indent "|- " parts[n]
+                    }
+                '
+        fi
+    done
+}
+
 # ==========================================
 # GENERAR PLAN
 # ==========================================
@@ -41,7 +81,7 @@ generate_plan() {
 
     business=$(cat "$CONTEXT/BUSINESS.md")
     architecture=$(cat "$CONTEXT/ARQUITECTURE.md")
-    repo_tree=$(tree -L 3 "$FRONT" "$BACK")
+    repo_tree=$(repo_tree 3 "$FRONT" "$BACK")
 
     PROMPT=$(cat "$PROMPTS/planner.txt")
 
@@ -209,9 +249,9 @@ rebuild_repo_index() {
     echo ""
     echo "🗂 Reconstruyendo REPO_INDEX..."
 
-    tree -L 4 "$FRONT/src" > "$CONTEXT/REPO_INDEX.md"
+    repo_tree 4 "$FRONT/src" > "$CONTEXT/REPO_INDEX.md"
     echo "" >> "$CONTEXT/REPO_INDEX.md"
-    tree -L 4 "$BACK/src" >> "$CONTEXT/REPO_INDEX.md"
+    repo_tree 4 "$BACK/src" >> "$CONTEXT/REPO_INDEX.md"
 
     echo "✓ Repo index actualizado"
 
