@@ -23,7 +23,8 @@ mkdir -p "$STATE_DIR"
 # ==========================================
 
 read_json() {
-    python3 -c "import sys,json; print(json.load(sys.stdin)$1)"
+    expr="$1"
+    python3 -c "import sys,json; data=json.load(sys.stdin); expr=sys.argv[1]; print(eval('data' + expr) if expr else data)" "$expr"
 }
 
 # ==========================================
@@ -381,9 +382,31 @@ titulo=$1
 descripcion=$2
 
 if [ -z "$titulo" ]; then
-echo "Uso:"
-echo "./orchestrator.sh \"titulo\" \"descripcion\""
-exit 1
+    if [ ! -f "$AGENT_DIR/projects.json" ]; then
+        echo "No se encontro projects.json y no se recibieron argumentos."
+        echo "Uso:"
+        echo "./orchestrator.sh \"titulo\" \"descripcion\""
+        exit 1
+    fi
+
+    total_projects=$(cat "$AGENT_DIR/projects.json" | read_json ".__len__()")
+
+    if [ "$total_projects" -eq 0 ]; then
+        echo "projects.json no tiene tareas para ejecutar."
+        exit 1
+    fi
+
+    titulo=$(cat "$AGENT_DIR/projects.json" | read_json "[0]['titulo']")
+    descripcion=$(cat "$AGENT_DIR/projects.json" | read_json "[0]['descripcion']")
+    project_branch=$(cat "$AGENT_DIR/projects.json" | read_json "[0].get('rama', '')")
+
+    if [ -n "$project_branch" ]; then
+        TARGET_BRANCH="$project_branch"
+    fi
+
+    echo "Proyecto cargado desde projects.json"
+    echo "Titulo: $titulo"
+    echo "Branch objetivo: $TARGET_BRANCH"
 fi
 
 generate_plan "$titulo" "$descripcion"
