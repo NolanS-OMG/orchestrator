@@ -36,6 +36,10 @@ src/
         useGetStaff.ts      # GET /api/staff?tenant_id=...
         useCreateStaff.ts   # POST /api/staff
         useStaffLogin.ts    # POST /api/staff/login
+    StaffLogin/      # Public Staff App entry — PIN login screen
+      StaffLogin.tsx        # PIN login form; staff selector dropdown if list available; tenant_id from ?tenant_id= query param
+      styles/
+        StaffLogin.module.css
     NotFound/        # 404 page shown for unmatched routes
   data/
     translation/
@@ -55,6 +59,7 @@ src/
 /tenants/new              → CreateTenant (PrivateRoute > Layout)
 /tenants/:tenantId        → TenantDetailPage > TenantDetail (PrivateRoute > Layout)
 /tenants/:tenantId/staff  → StaffListPage > StaffList (PrivateRoute > Layout)
+/staff/login              → StaffLogin (standalone public — no auth redirect)
 *                         → NotFound
 ```
 
