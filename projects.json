@@ -1,7 +1,7 @@
 [
   {
-    "titulo": "Staff management",
-    "descripcion": "Crear CRUD de staff con login por PIN",
-    "rama": "feature/staff-system"
+    "titulo": "Gestión de Customers",
+    "descripcion": "Migración + modelo + endpoints. Lista de customers + formulario de creación/búsqueda por teléfono en el front. El staff los registra, así que esta pantalla vive dentro del contexto de un tenant autenticado.",
+    "rama": "feature/customers-management"
   }
 ]
