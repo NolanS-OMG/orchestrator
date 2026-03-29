@@ -23,7 +23,7 @@ mkdir -p "$STATE_DIR"
 # ==========================================
 
 read_json() {
-python3 -c "import sys,json; print(json.load(sys.stdin)$1)"
+    python3 -c "import sys,json; print(json.load(sys.stdin)$1)"
 }
 
 # ==========================================
@@ -32,27 +32,27 @@ python3 -c "import sys,json; print(json.load(sys.stdin)$1)"
 
 generate_plan() {
 
-titulo=$1
-descripcion=$2
+    titulo=$1
+    descripcion=$2
 
-echo ""
-echo "🧠 Generando plan con Claude..."
+    echo ""
+    echo "🧠 Generando plan con Claude..."
 
-business=$(cat "$CONTEXT/BUSINESS.md")
-architecture=$(cat "$CONTEXT/ARCHITECTURE.md")
-repo_tree=$(tree -L 3 "$FRONT" "$BACK")
+    business=$(cat "$CONTEXT/BUSINESS.md")
+    architecture=$(cat "$CONTEXT/ARCHITECTURE.md")
+    repo_tree=$(tree -L 3 "$FRONT" "$BACK")
 
-PROMPT=$(cat "$PROMPTS/planner.txt")
+    PROMPT=$(cat "$PROMPTS/planner.txt")
 
-PROMPT=${PROMPT//'{{titulo}}'/$titulo}
-PROMPT=${PROMPT//'{{descripcion}}'/$descripcion}
-PROMPT=${PROMPT//'{{business}}'/$business}
-PROMPT=${PROMPT//'{{architecture}}'/$architecture}
-PROMPT=${PROMPT//'{{repo_tree}}'/$repo_tree}
+    PROMPT=${PROMPT//'{{titulo}}'/$titulo}
+    PROMPT=${PROMPT//'{{descripcion}}'/$descripcion}
+    PROMPT=${PROMPT//'{{business}}'/$business}
+    PROMPT=${PROMPT//'{{architecture}}'/$architecture}
+    PROMPT=${PROMPT//'{{repo_tree}}'/$repo_tree}
 
-claude --print --dangerously-skip-permissions "$PROMPT" > "$PLAN_FILE"
+    claude --print --dangerously-skip-permissions "$PROMPT" > "$PLAN_FILE"
 
-echo "✓ Plan generado en $PLAN_FILE"
+    echo "✓ Plan generado en $PLAN_FILE"
 
 }
 
@@ -62,26 +62,26 @@ echo "✓ Plan generado en $PLAN_FILE"
 
 execute_task() {
 
-task_title=$1
+    task_title=$1
 
-echo ""
-echo "⚙️ Ejecutando tarea: $task_title"
+    echo ""
+    echo "⚙️ Ejecutando tarea: $task_title"
 
-business=$(cat "$CONTEXT/BUSINESS.md")
+    business=$(cat "$CONTEXT/BUSINESS.md")
 
-recent_diff_front=$(git -C "$FRONT" diff HEAD~3 2>/dev/null || true)
-recent_diff_back=$(git -C "$BACK" diff HEAD~3 2>/dev/null || true)
+    recent_diff_front=$(git -C "$FRONT" diff HEAD~3 2>/dev/null || true)
+    recent_diff_back=$(git -C "$BACK" diff HEAD~3 2>/dev/null || true)
 
-PROMPT=$(cat "$PROMPTS/executor.txt")
+    PROMPT=$(cat "$PROMPTS/executor.txt")
 
-PROMPT=${PROMPT//'{{task}}'/$task_title}
-PROMPT=${PROMPT//'{{front}}'/$FRONT}
-PROMPT=${PROMPT//'{{back}}'/$BACK}
-PROMPT=${PROMPT//'{{business}}'/$business}
-PROMPT=${PROMPT//'{{recent_diff_front}}'/$recent_diff_front}
-PROMPT=${PROMPT//'{{recent_diff_back}}'/$recent_diff_back}
+    PROMPT=${PROMPT//'{{task}}'/$task_title}
+    PROMPT=${PROMPT//'{{front}}'/$FRONT}
+    PROMPT=${PROMPT//'{{back}}'/$BACK}
+    PROMPT=${PROMPT//'{{business}}'/$business}
+    PROMPT=${PROMPT//'{{recent_diff_front}}'/$recent_diff_front}
+    PROMPT=${PROMPT//'{{recent_diff_back}}'/$recent_diff_back}
 
-claude --print --dangerously-skip-permissions "$PROMPT"
+    claude --print --dangerously-skip-permissions "$PROMPT"
 
 }
 
@@ -91,32 +91,32 @@ claude --print --dangerously-skip-permissions "$PROMPT"
 
 validate_code() {
 
-echo ""
-echo "🔎 Validando código..."
+    echo ""
+    echo "🔎 Validando código..."
 
-cd "$FRONT"
+    cd "$FRONT"
 
-if ! npm run build; then
-return 1
-fi
+    if ! npm run build; then
+        return 1
+    fi
 
-if ! npm run lint; then
-return 1
-fi
+    if ! npm run lint; then
+        return 1
+    fi
 
-cd "$BACK"
+    cd "$BACK"
 
-if ! npm run build; then
-return 1
-fi
+    if ! npm run build; then
+        return 1
+    fi
 
-if ! npm run test; then
-return 1
-fi
+    if ! npm run test; then
+        return 1
+    fi
 
-echo "✓ Validación OK"
+    echo "✓ Validación OK"
 
-return 0
+    return 0
 
 }
 
@@ -126,21 +126,21 @@ return 0
 
 fix_build() {
 
-error_log=$1
+    error_log=$1
 
-echo ""
-echo "🩹 Intentando autocorrección..."
+    echo ""
+    echo "🩹 Intentando autocorrección..."
 
-diff_front=$(git -C "$FRONT" diff)
-diff_back=$(git -C "$BACK" diff)
+    diff_front=$(git -C "$FRONT" diff)
+    diff_back=$(git -C "$BACK" diff)
 
-PROMPT=$(cat "$PROMPTS/fix.txt")
+    PROMPT=$(cat "$PROMPTS/fix.txt")
 
-PROMPT=${PROMPT//'{{error}}'/$error_log}
-PROMPT=${PROMPT//'{{diff_front}}'/$diff_front}
-PROMPT=${PROMPT//'{{diff_back}}'/$diff_back}
+    PROMPT=${PROMPT//'{{error}}'/$error_log}
+    PROMPT=${PROMPT//'{{diff_front}}'/$diff_front}
+    PROMPT=${PROMPT//'{{diff_back}}'/$diff_back}
 
-claude --print --dangerously-skip-permissions "$PROMPT"
+    claude --print --dangerously-skip-permissions "$PROMPT"
 
 }
 
@@ -150,26 +150,26 @@ claude --print --dangerously-skip-permissions "$PROMPT"
 
 commit_changes() {
 
-msg=$1
+    msg=$1
 
-echo ""
-echo "💾 Commit automático..."
+    echo ""
+    echo "💾 Commit automático..."
 
-cd "$FRONT"
+    cd "$FRONT"
 
-if ! git diff --quiet; then
-git add .
-git commit -m "$msg"
-git push origin $TARGET_BRANCH
-fi
+    if ! git diff --quiet; then
+        git add .
+        git commit -m "$msg"
+        git push origin $TARGET_BRANCH
+    fi
 
-cd "$BACK"
+    cd "$BACK"
 
-if ! git diff --quiet; then
-git add .
-git commit -m "$msg"
-git push origin $TARGET_BRANCH
-fi
+    if ! git diff --quiet; then
+        git add .
+        git commit -m "$msg"
+        git push origin $TARGET_BRANCH
+    fi
 
 }
 
@@ -179,9 +179,9 @@ fi
 
 save_progress() {
 
-task_index=$1
+    task_index=$1
 
-echo "{\"task\": $task_index}" > "$PROGRESS_FILE"
+    echo "{\"task\": $task_index}" > "$PROGRESS_FILE"
 
 }
 
@@ -192,9 +192,9 @@ echo "{\"task\": $task_index}" > "$PROGRESS_FILE"
 load_progress() {
 
 if [ -f "$PROGRESS_FILE" ]; then
-cat "$PROGRESS_FILE" | read_json "['task']"
+    cat "$PROGRESS_FILE" | read_json "['task']"
 else
-echo 0
+    echo 0
 fi
 
 }
@@ -205,14 +205,14 @@ fi
 
 rebuild_repo_index() {
 
-echo ""
-echo "🗂 Reconstruyendo REPO_INDEX..."
+    echo ""
+    echo "🗂 Reconstruyendo REPO_INDEX..."
 
-tree -L 4 "$FRONT/src" > "$CONTEXT/REPO_INDEX.md"
-echo "" >> "$CONTEXT/REPO_INDEX.md"
-tree -L 4 "$BACK/src" >> "$CONTEXT/REPO_INDEX.md"
+    tree -L 4 "$FRONT/src" > "$CONTEXT/REPO_INDEX.md"
+    echo "" >> "$CONTEXT/REPO_INDEX.md"
+    tree -L 4 "$BACK/src" >> "$CONTEXT/REPO_INDEX.md"
 
-echo "✓ Repo index actualizado"
+    echo "✓ Repo index actualizado"
 
 }
 
@@ -222,82 +222,82 @@ echo "✓ Repo index actualizado"
 
 update_context() {
 
-titulo=$1
-descripcion=$2
+    titulo=$1
+    descripcion=$2
 
-echo ""
-echo "🧠 Revisando contexto del sistema..."
+    echo ""
+    echo "🧠 Revisando contexto del sistema..."
 
-diff_front=$(git -C "$FRONT" diff HEAD~20 2>/dev/null || true)
-diff_back=$(git -C "$BACK" diff HEAD~20 2>/dev/null || true)
+    diff_front=$(git -C "$FRONT" diff HEAD~20 2>/dev/null || true)
+    diff_back=$(git -C "$BACK" diff HEAD~20 2>/dev/null || true)
 
-business=$(cat "$CONTEXT/BUSINESS.md")
-architecture=$(cat "$CONTEXT/ARCHITECTURE.md")
-project=$(cat "$CONTEXT/PROJECT_CONTEXT.md")
-repo_index=$(cat "$CONTEXT/REPO_INDEX.md")
+    business=$(cat "$CONTEXT/BUSINESS.md")
+    architecture=$(cat "$CONTEXT/ARCHITECTURE.md")
+    project=$(cat "$CONTEXT/PROJECT_CONTEXT.md")
+    repo_index=$(cat "$CONTEXT/REPO_INDEX.md")
 
-PROMPT="Acabamos de terminar el siguiente proyecto:
+    PROMPT="Acabamos de terminar el siguiente proyecto:
 
-$titulo
+        $titulo
 
-Descripción:
-$descripcion
+        Descripción:
+        $descripcion
 
-Cambios recientes frontend:
+        Cambios recientes frontend:
 
-$diff_front
+        $diff_front
 
-Cambios recientes backend:
+        Cambios recientes backend:
 
-$diff_back
+        $diff_back
 
-Archivos de contexto actuales:
+        Archivos de contexto actuales:
 
-====================
-BUSINESS.md
-====================
-$business
+        ====================
+        BUSINESS.md
+        ====================
+        $business
 
-====================
-ARCHITECTURE.md
-====================
-$architecture
+        ====================
+        ARCHITECTURE.md
+        ====================
+        $architecture
 
-====================
-PROJECT_CONTEXT.md
-====================
-$project
+        ====================
+        PROJECT_CONTEXT.md
+        ====================
+        $project
 
-====================
-REPO_INDEX.md
-====================
-$repo_index
+        ====================
+        REPO_INDEX.md
+        ====================
+        $repo_index
 
 
-Tarea:
+        Tarea:
 
-Revisar si estos archivos necesitan actualizarse según los cambios del proyecto.
+        Revisar si estos archivos necesitan actualizarse según los cambios del proyecto.
 
-Reglas:
+        Reglas:
 
-- Actualizar SOLO si los cambios lo requieren
-- Mantener los archivos cortos
-- No agregar detalles irrelevantes
-- No duplicar información
+        - Actualizar SOLO si los cambios lo requieren
+        - Mantener los archivos cortos
+        - No agregar detalles irrelevantes
+        - No duplicar información
 
-Si necesitas modificar archivos, edita directamente:
+        Si necesitas modificar archivos, edita directamente:
 
-$CONTEXT/BUSINESS.md
-$CONTEXT/ARCHITECTURE.md
-$CONTEXT/PROJECT_CONTEXT.md
-$CONTEXT/REPO_INDEX.md
-"
+        $CONTEXT/BUSINESS.md
+        $CONTEXT/ARCHITECTURE.md
+        $CONTEXT/PROJECT_CONTEXT.md
+        $CONTEXT/REPO_INDEX.md
+    "
 
-cd "$AGENT_DIR"
+    cd "$AGENT_DIR"
 
-claude --dangerously-skip-permissions "$PROMPT"
+    claude --dangerously-skip-permissions "$PROMPT"
 
-echo "✓ Contexto revisado"
+    echo "✓ Contexto revisado"
 
 }
 
@@ -308,68 +308,68 @@ echo "✓ Contexto revisado"
 
 run_plan() {
 
-echo ""
-echo "🚀 Ejecutando plan..."
+    echo ""
+    echo "🚀 Ejecutando plan..."
 
-total_tasks=$(cat "$PLAN_FILE" | read_json "['tasks'].__len__()")
+    total_tasks=$(cat "$PLAN_FILE" | read_json "['tasks'].__len__()")
 
-start_task=$(load_progress)
+    start_task=$(load_progress)
 
-echo "Total tareas: $total_tasks"
-echo "Reanudando desde: $start_task"
+    echo "Total tareas: $total_tasks"
+    echo "Reanudando desde: $start_task"
 
-for (( i=$start_task; i<$total_tasks; i++ ))
-do
+    for (( i=$start_task; i<$total_tasks; i++ ))
+    do
 
-task_title=$(cat "$PLAN_FILE" | read_json "['tasks'][$i]['title']")
+        task_title=$(cat "$PLAN_FILE" | read_json "['tasks'][$i]['title']")
 
-echo ""
-echo "====================================="
-echo "TAREA $i / $total_tasks"
-echo "$task_title"
-echo "====================================="
+        echo ""
+        echo "====================================="
+        echo "TAREA $i / $total_tasks"
+        echo "$task_title"
+        echo "====================================="
 
-execute_task "$task_title"
+        execute_task "$task_title"
 
-echo ""
-echo "🔧 Validando..."
+        echo ""
+        echo "🔧 Validando..."
 
-if validate_code; then
+        if validate_code; then
 
-commit_changes "feat: $task_title"
+            commit_changes "feat: $task_title"
 
-save_progress $((i+1))
+            save_progress $((i+1))
 
-else
+        else
 
-echo "❌ Falló la validación"
+            echo "❌ Falló la validación"
 
-error_log=$(validate_code 2>&1)
+            error_log=$(validate_code 2>&1)
 
-fix_build "$error_log"
+            fix_build "$error_log"
 
-echo "🔁 Reintentando validación..."
+            echo "🔁 Reintentando validación..."
 
-if validate_code; then
+            if validate_code; then
 
-commit_changes "fix: $task_title"
+                commit_changes "fix: $task_title"
 
-save_progress $((i+1))
+                save_progress $((i+1))
 
-else
+            else
 
-echo ""
-echo "🚨 No se pudo arreglar automáticamente"
-exit 1
+                echo ""
+                echo "🚨 No se pudo arreglar automáticamente"
+                exit 1
 
-fi
+            fi
 
-fi
+        fi
 
-done
+    done
 
-echo ""
-echo "🎉 PLAN COMPLETADO"
+    echo ""
+    echo "🎉 PLAN COMPLETADO"
 
 }
 
