@@ -197,6 +197,7 @@ src/
       001_create_users_table.sql
       002_create_auth_tokens_table.sql
       003_create_tenants_table.sql
+      004_create_staff_table.sql
   routes/
     index.ts                      # Mounts all sub-routers under /api
     health.routes.ts              # GET /api/health
@@ -286,10 +287,11 @@ errorHandler            → Catches any unhandled error → standard 500
 |---|---|
 | **users** | `id` UUID PK, `email` UNIQUE, `password_hash`, `created_at`, `updated_at` |
 | **auth_tokens** | `id` UUID PK, `user_id` FK→users (CASCADE), `token_hash` UNIQUE, `expires_at` |
-| **tenants** | `id` UUID PK, `name`, `slug` UNIQUE, `settings` JSONB `{goal, reward, cooldown_hours}` |
+| **tenants** | `id` UUID PK, `user_id` UUID (no FK constraint), `name`, `slug` UNIQUE, `settings` JSONB `{goal, reward, cooldown_hours}` |
+| **staff** | `id` UUID PK, `tenant_id` UUID FK→tenants(id), `name`, `pin_hash`, `created_at`; UNIQUE(tenant_id, name) |
 | **schema_migrations** | Internal migration tracking (`filename` UNIQUE, `applied_at`) |
 
-Indexes: `idx_users_email`, `idx_auth_tokens_user_id`, `idx_auth_tokens_token_hash`, `idx_tenants_slug`.
+Indexes: `idx_users_email`, `idx_auth_tokens_user_id`, `idx_auth_tokens_token_hash`, `idx_tenants_slug`, `idx_staff_tenant_id`.
 
 ### Middlewares
 
