@@ -28,6 +28,14 @@ src/
     Dashboard/       # Main page after login: greeting (email from localStorage) + summary cards
     CreateTenant/    # Tenant creation form (name, slug, settings)
     TenantDetail/    # Tenant detail + inline settings editor (goal, reward, cooldown_hours)
+    Staff/           # Staff management
+      StaffList.tsx         # Staff list for a tenant (loading, error, empty + list states)
+      styles/
+        StaffList.module.css
+      hooks/
+        useGetStaff.ts      # GET /api/staff?tenant_id=...
+        useCreateStaff.ts   # POST /api/staff
+        useStaffLogin.ts    # POST /api/staff/login
     NotFound/        # 404 page shown for unmatched routes
   data/
     translation/
@@ -46,6 +54,7 @@ src/
 /dashboard                → Dashboard (PrivateRoute > Layout)
 /tenants/new              → CreateTenant (PrivateRoute > Layout)
 /tenants/:tenantId        → TenantDetailPage > TenantDetail (PrivateRoute > Layout)
+/tenants/:tenantId/staff  → StaffListPage > StaffList (PrivateRoute > Layout)
 *                         → NotFound
 ```
 
