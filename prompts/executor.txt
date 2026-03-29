@@ -1,0 +1,37 @@
+Implementa la siguiente tarea:
+
+{{task}}
+
+Repositorios:
+
+Frontend:
+{{front}}
+
+Backend:
+{{back}}
+
+Contexto negocio:
+{{business}}
+
+Cambios recientes:
+{{recent_diff}}
+
+Reglas importantes:
+
+Antes de escribir código:
+
+1. revisa helpers/
+2. revisa utils/
+3. usa grep para evitar duplicación
+4. sigue CLAUDE.md
+
+Implementa solo lo necesario.
+
+Al terminar:
+
+git add
+git commit
+
+Mensaje:
+
+feat: {{task}}

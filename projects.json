@@ -1,0 +1,7 @@
+[
+  {
+    "titulo": "Staff management",
+    "descripcion": "Crear CRUD de staff con login por PIN",
+    "rama": "feature/staff-system"
+  }
+]

@@ -1,0 +1,38 @@
+Analiza el siguiente proyecto de desarrollo.
+
+Titulo:
+{{titulo}}
+
+Descripcion:
+{{descripcion}}
+
+Contexto de negocio:
+{{business}}
+
+Arquitectura:
+{{architecture}}
+
+Estructura del repositorio:
+{{repo_tree}}
+
+Genera un plan de implementación en JSON.
+
+Formato:
+
+{
+ "tasks":[
+  {
+   "id":1,
+   "title":"",
+   "repos":"front|back|front,back"
+  }
+ ]
+}
+
+Reglas:
+
+- dividir en tareas pequeñas
+- máximo 1 feature por tarea
+- cada tarea produce un commit
+- respetar dependencias
+- evitar tareas gigantes

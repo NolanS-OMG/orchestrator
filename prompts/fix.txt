@@ -1,0 +1,16 @@
+El build falló.
+
+Error:
+
+{{error}}
+
+Cambios recientes:
+
+{{diff}}
+
+Corrige el problema sin romper funcionalidad existente.
+
+Cuando termines:
+
+git add
+git commit -m "fix: resolve build error"
