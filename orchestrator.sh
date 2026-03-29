@@ -40,7 +40,7 @@ generate_plan() {
     echo "🧠 Generando plan con Claude..."
 
     business=$(cat "$CONTEXT/BUSINESS.md")
-    architecture=$(cat "$CONTEXT/ARCHITECTURE.md")
+    architecture=$(cat "$CONTEXT/ARQUITECTURE.md")
     repo_tree=$(tree -L 3 "$FRONT" "$BACK")
 
     PROMPT=$(cat "$PROMPTS/planner.txt")
@@ -233,7 +233,7 @@ update_context() {
     diff_back=$(git -C "$BACK" diff HEAD~20 2>/dev/null || true)
 
     business=$(cat "$CONTEXT/BUSINESS.md")
-    architecture=$(cat "$CONTEXT/ARCHITECTURE.md")
+    architecture=$(cat "$CONTEXT/ARQUITECTURE.md")
     project=$(cat "$CONTEXT/PROJECT_CONTEXT.md")
     repo_index=$(cat "$CONTEXT/REPO_INDEX.md")
 
@@ -260,7 +260,7 @@ update_context() {
         $business
 
         ====================
-        ARCHITECTURE.md
+        ARQUITECTURE.md
         ====================
         $architecture
 
@@ -289,7 +289,7 @@ update_context() {
         Si necesitas modificar archivos, edita directamente:
 
         $CONTEXT/BUSINESS.md
-        $CONTEXT/ARCHITECTURE.md
+        $CONTEXT/ARQUITECTURE.md
         $CONTEXT/PROJECT_CONTEXT.md
         $CONTEXT/REPO_INDEX.md
     "
